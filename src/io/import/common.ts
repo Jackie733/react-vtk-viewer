@@ -1,7 +1,8 @@
 import { FetchCache } from '@/utils/fetch';
 import { Config } from './configJson';
-import { DataSource } from './dataSource';
+import { DataSource, FileSource } from './dataSource';
 import { Handler } from '@/core/pipeline';
+import { ARCHIVE_FILE_TYPES } from '../mimeTypes';
 
 interface DataResult {
   dataSource: DataSource;
@@ -30,6 +31,12 @@ export interface ImportContext {
 }
 
 export type ImportHandler = Handler<DataSource, ImportResult, ImportContext>;
+
+export function isArchive(
+  ds: DataSource,
+): ds is DataSource & { fileSrc: FileSource } {
+  return !!ds.fileSrc && ARCHIVE_FILE_TYPES.has(ds.fileSrc.fileType);
+}
 
 export function isLoadableResult(
   importResult: ImportResult,
