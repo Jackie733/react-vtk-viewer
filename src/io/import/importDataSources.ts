@@ -14,6 +14,7 @@ import { applyConfig } from './configJson';
 import updateFileMimeType from './processors/updateFileMimeType';
 import handleDicomFile from './processors/handleDicomFile';
 import extractArchive from './processors/extractArchive';
+import importSingleFile from './processors/importSingleFile';
 
 function toMeaningfulErrorString(thrown: unknown) {
   const strThrown = String(thrown);
@@ -120,6 +121,7 @@ export async function importDataSources(dataSources: DataSource[]) {
     updateFileMimeType,
     extractArchive,
     handleDicomFile,
+    importSingleFile,
     unhandledResource,
   ];
   const loader = new Pipeline(middleware);
@@ -130,6 +132,7 @@ export async function importDataSources(dataSources: DataSource[]) {
 
   const configResult = await importConfigs(results);
   const dicomResult = await importDicomFiles(importContext.dicomDataSources);
+  console.log(importContext);
 
   return [...results, dicomResult, configResult].filter(
     (result) => !result.ok || isSelectable(result),

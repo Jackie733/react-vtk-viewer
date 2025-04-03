@@ -1,5 +1,9 @@
 import { z } from 'zod';
 
+export function identity<T>(arg: T) {
+  return arg;
+}
+
 type PromiseResolveFunction<T> = (value: T) => void;
 type PromiseRejectFunction = (reason?: Error) => void;
 export interface Deferred<T> {
@@ -25,6 +29,10 @@ export function defer<T>(): Deferred<T> {
   });
 
   return { promise, resolve, reject };
+}
+
+export function pick<T, K extends keyof T>(obj: T, ...keys: K[]): Pick<T, K> {
+  return keys.reduce((o, k) => ({ ...o, [k]: obj[k] }), {} as Pick<T, K>);
 }
 
 export function partitionByType<T, U extends T>(
