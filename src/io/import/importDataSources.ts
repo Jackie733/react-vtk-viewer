@@ -15,6 +15,7 @@ import updateFileMimeType from './processors/updateFileMimeType';
 import handleDicomFile from './processors/handleDicomFile';
 import extractArchive from './processors/extractArchive';
 import importSingleFile from './processors/importSingleFile';
+import { importFiles } from '@/store/datasets/dicom';
 
 function toMeaningfulErrorString(thrown: unknown) {
   const strThrown = String(thrown);
@@ -87,8 +88,7 @@ const importDicomFiles = async (
         data: [],
       };
     }
-    // TODO: await useDICOMStore().importFiles(dicomDataSources)
-    const volumeKeys: any = [];
+    const volumeKeys = await importFiles(dicomDataSources);
     return {
       ok: true as const,
       data: volumeKeys.map((key) => ({

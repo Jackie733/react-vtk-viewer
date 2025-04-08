@@ -41,12 +41,12 @@ export async function initItkWorker() {
   try {
     await readDicomTags(new File([], 'a.dcm'));
   } catch (error) {
-    console.error('init read dicom tags', error);
+    console.info('init read dicom tags', error);
   }
 
   try {
     await readImage(new File([], 'a.dcm'));
   } catch (error) {
-    console.error('init read image', error);
+    console.info('init read image', error);
   }
 }
