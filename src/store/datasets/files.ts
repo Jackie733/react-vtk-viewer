@@ -7,14 +7,23 @@ type FileState = {
 };
 
 type FileAction = {
+  getDataSources: (dataID: string) => DataSourceWithFile[];
+  getFiles: (dataID: string) => File[];
   remove: (dataID: string) => void;
   add: (dataID: string, files: DataSourceWithFile[]) => void;
 };
 
 export const useFileStore = create<FileState & FileAction>()(
-  immer((set) => ({
+  immer((set, get) => ({
     byDataID: {},
 
+    getDataSources: (dataID: string) => {
+      return get().byDataID[dataID] ?? [];
+    },
+
+    getFiles: (dataID: string) => {
+      return (get().byDataID[dataID] ?? []).map((ds) => ds.fileSrc.file);
+    },
     remove: (dataID) => {
       set((state) => {
         delete state.byDataID[dataID];
@@ -28,12 +37,4 @@ export const useFileStore = create<FileState & FileAction>()(
   })),
 );
 
-export const getDataSources = (dataID: string) => {
-  const { byDataID } = useFileStore.getState();
-  return byDataID[dataID] ?? [];
-};
-
-export const getFiles = (dataID: string) => {
-  const { byDataID } = useFileStore.getState();
-  return (byDataID[dataID] ?? []).map((ds) => ds.fileSrc.file);
-};
+export const fileStore = useFileStore;

@@ -31,6 +31,13 @@ export function defer<T>(): Deferred<T> {
   return { promise, resolve, reject };
 }
 
+export function removeFromArray<T>(arr: Array<T>, el: T) {
+  const idx = arr.indexOf(el);
+  if (idx > -1) {
+    arr.splice(idx, 1);
+  }
+}
+
 export function pick<T, K extends keyof T>(obj: T, ...keys: K[]): Pick<T, K> {
   return keys.reduce((o, k) => ({ ...o, [k]: obj[k] }), {} as Pick<T, K>);
 }
@@ -51,4 +58,8 @@ export function zodEnumFromObjKeys<K extends string>(
 ): z.ZodEnum<[K, ...K[]]> {
   const [firstKey, ...otherKeys] = Object.keys(obj) as K[];
   return z.enum([firstKey, ...otherKeys]);
+}
+
+export function nonNullable<T>(value: T): value is NonNullable<T> {
+  return value != null;
 }

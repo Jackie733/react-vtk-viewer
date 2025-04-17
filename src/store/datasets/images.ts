@@ -1,4 +1,3 @@
-import { useId } from 'react';
 import { vtkImageData } from '@kitware/vtk.js/Common/DataModel/ImageData';
 import type { Bounds } from '@kitware/vtk.js/types';
 import { mat3, mat4, vec3 } from 'gl-matrix';
@@ -7,6 +6,7 @@ import { immer } from 'zustand/middleware/immer';
 import { defaultLPSDirections, getLPSDirections } from '@/utils/lps';
 import { ImageMetadata } from '@/types/image';
 import { compareImageSpaces } from '@/utils/imageSpace';
+import { useIdStore } from '../id';
 
 export const defaultImageMetadata = () => ({
   name: '(none)',
@@ -31,7 +31,7 @@ type ImageAction = {
     name: string,
     imageData: vtkImageData,
     id?: string,
-  ) => string | void;
+  ) => string;
   updateData: (id: string, imageData: vtkImageData) => void;
   deleteData: (id: string) => void;
 };
@@ -47,13 +47,14 @@ export const useImageStore = create<ImageState & ImageAction>()(
         if (id && id in state.dataIndex) {
           throw new Error('ID already exists');
         }
-        const newId = useId();
+        const newId = id || useIdStore.getState().nextId();
         state.idList.push(newId);
         state.dataIndex[newId] = imageData;
 
         state.metadata[newId] = { ...defaultImageMetadata(), name };
-        return newId;
       });
+      const returnId = id || String(useIdStore.getState().currentId);
+      return returnId;
     },
 
     updateData: (id, imageData) => {
@@ -102,3 +103,5 @@ export const checkAllImagesSameSpace = () => {
   });
   return allEqual;
 };
+
+export const imageStoreState = useImageStore.getState();

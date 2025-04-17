@@ -1,4 +1,5 @@
 import { Layouts } from '@/config';
+import { useViewStore } from '@/store/view';
 import { zodEnumFromObjKeys } from '@/utils';
 import { z } from 'zod';
 
@@ -24,9 +25,8 @@ export type Config = z.infer<typeof config>;
 
 const applyLayout = (manifest: Config) => {
   if (manifest.layout?.activeLayout) {
-    // const startingLayout = Layouts[manifest.layout.activeLayout];
-    // TODO: store layout
-    // useViewStore().setLayout(startingLayout);
+    const startingLayout = Layouts[manifest.layout.activeLayout];
+    useViewStore.getState().setLayout(startingLayout);
   }
 };
 

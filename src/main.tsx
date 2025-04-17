@@ -2,6 +2,7 @@ import '@kitware/vtk.js/Rendering/OpenGL/Profiles/Geometry';
 import '@kitware/vtk.js/Rendering/OpenGL/Profiles/Volume';
 import '@kitware/vtk.js/Rendering/OpenGL/Profiles/Glyph';
 
+import { scan } from 'react-scan';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { setPipelinesBaseUrl, setPipelineWorkerUrl } from 'itk-wasm';
@@ -13,6 +14,10 @@ import App from './App.tsx';
 import { registerAllReaders } from './io/readers.ts';
 import { FILE_READERS } from './io/index.ts';
 import { initItkWorker } from './io/itk/worker.ts';
+
+scan({
+  enabled: true,
+});
 
 initItkWorker();
 registerAllReaders(FILE_READERS);

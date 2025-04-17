@@ -1,5 +1,9 @@
 import { FILE_READERS } from '@/io';
 import { ImportHandler } from '../common';
+import { useImageStore } from '@/store/datasets/images';
+import vtkImageData from '@kitware/vtk.js/Common/DataModel/ImageData';
+import { useFileStore } from '@/store/datasets/files';
+import { DataSourceWithFile } from '../dataSource';
 
 const importSingleFile: ImportHandler = async (dataSource, { done }) => {
   if (!dataSource.fileSrc) {
@@ -15,8 +19,11 @@ const importSingleFile: ImportHandler = async (dataSource, { done }) => {
   const dataObject = await reader(fileSrc.file);
 
   if (dataObject.isA('vtkImageData')) {
-    // TODO: const dataID = useImageStore().addVTKImageData()
-    const dataID = 'Image';
+    const dataID = useImageStore
+      .getState()
+      .addVTKImageData(fileSrc.file.name, dataObject as vtkImageData);
+    useFileStore.getState().add(dataID, [dataSource as DataSourceWithFile]);
+
     return done({
       dataID,
       dataSource,
